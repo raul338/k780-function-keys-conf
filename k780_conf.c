@@ -32,7 +32,7 @@
 #include <errno.h>
 
 #define HID_VENDOR_ID_LOGITECH			(__u32)0x046d
-#define HID_DEVICE_ID_K380              (__s16)0xb342
+#define HID_DEVICE_ID_K780              (__s16)0xb33b
 
 
 const char k380_seq_fkeys_on[]  = {0x10, 0xff, 0x0b, 0x1e, 0x00, 0x00, 0x00};
@@ -54,7 +54,7 @@ void send(const int fd, const char * buf, const int len)
 		perror("write");
 	}
 	else if (res == len)
-       	{
+		{
 		// printf("Configuration sent.\n");
 	}
 	else
@@ -71,6 +71,7 @@ int main(int argc, char **argv)
 	struct hidraw_devinfo info;
 	const char * seq;
 	char *dev = NULL;
+	char buf[256];
 	int flag_fkeys = 1;
 	int c;
 
@@ -79,12 +80,12 @@ int main(int argc, char **argv)
 		printf("Logitech Keyboard Configurator (by trial-n-error)\n\n");
 		printf("Usage: %s -d /dev/hidraw{0,1,...} -f {on|off}:\n\n", argv[0]);
 		printf("-d /dev/hidrawX\n"
-		       "   Path to hidraw device. Determine by e.g.:\n"
-		       "     ls /sys/class/hidraw/hidraw*/device/uevent\n"
-		       "   and/or\n"
-		       "     cat /sys/class/hidraw/hidraw*/device/uevent\n");
+			   "   Path to hidraw device. Determine by e.g.:\n"
+			   "     ls /sys/class/hidraw/hidraw*/device/uevent\n"
+			   "   and/or\n"
+			   "     cat /sys/class/hidraw/hidraw*/device/uevent\n");
 		printf("-f <on|off>\n"
-		       "   To enable direct access to F-keys.\n");
+			   "   To enable direct access to F-keys.\n");
 		printf("\n");
 	}
 
@@ -146,15 +147,20 @@ int main(int argc, char **argv)
 		perror("error while getting info from device");
 	}
 	else
-       	{
-		if (info.bustype != BUS_BLUETOOTH || 
-		    info.vendor  != HID_VENDOR_ID_LOGITECH ||
-		    info.product != HID_DEVICE_ID_K380)
+		{
+		if (info.bustype != BUS_BLUETOOTH ||
+			info.vendor  != HID_VENDOR_ID_LOGITECH ||
+			info.product != HID_DEVICE_ID_K780)
 		{
 			errno = EPERM;
-			perror("The given device is not a supported "
-			       "Logitech keyboard");
-			printf("Product : %x", info.product);
+			perror("The given device is not a supported Logitech keyboard");
+
+			res = ioctl(fd, HIDIOCGRAWNAME(256), buf);
+			if (res < 0)
+				perror("HIDIOCGRAWNAME");
+			else
+			printf("Raw Name: %s\n", buf);
+			printf("Vendor: %x - Product : %x\n", info.vendor, info.product);
 
 			return 1;
 		}
