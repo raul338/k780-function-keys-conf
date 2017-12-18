@@ -35,8 +35,8 @@
 #define HID_DEVICE_ID_K780              (__s16)0xb33b
 
 
-const char k380_seq_fkeys_on[]  = {0x10, 0xff, 0x0b, 0x1e, 0x00, 0x00, 0x00};
-const char k380_seq_fkeys_off[] = {0x10, 0xff, 0x0b, 0x1e, 0x01, 0x00, 0x00};
+const char k780_seq_fkeys_on[]  = {0x10, 0xff, 0x0b, 0x1e, 0x00, 0x00, 0x00};
+const char k780_seq_fkeys_off[] = {0x10, 0xff, 0x0b, 0x1e, 0x01, 0x00, 0x00};
 
 const char opt_on[]  = "on";
 const char opt_off[] = "off";
@@ -169,12 +169,12 @@ int main(int argc, char **argv)
 	if (flag_fkeys)
 	{
 		printf("Sending ON: \n");
-		send(fd, k380_seq_fkeys_on,  sizeof(k380_seq_fkeys_on));
+		send(fd, k780_seq_fkeys_on,  sizeof(k780_seq_fkeys_on));
 	}
 	else
 	{
 		printf("Sending OFF: \n");
-		send(fd, k380_seq_fkeys_off, sizeof(k380_seq_fkeys_off));
+		send(fd, k780_seq_fkeys_off, sizeof(k780_seq_fkeys_off));
 	}
 
 	close(fd);
